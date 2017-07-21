@@ -29,10 +29,10 @@ if (!file_exists($filename)){
         echo date("H:i:s", $time) . " - " . $temp . "\n";
         if ($temp_now>$temp){
             $highest_temp_today = true;
-        }   
+        }
     }
     $temp_history[time()]=$temp_now;
-    
+
     if ($temp!=$temp_now){
         update_history($filename, $temp_history);
     }
@@ -41,6 +41,21 @@ if (!file_exists($filename)){
 if ($temp_now>=MAX_HIGH_TEMP && $highest_temp_today){
     echo "ALERT";
 }
+function send_alert ($user, $msg){
+  curl_setopt_array($ch = curl_init(), array(
+  CURLOPT_URL => "https://api.pushover.net/1/messages.json",
+  CURLOPT_POSTFIELDS => array(
+    "token" => PUSHOVER_APP_TOKEN,
+    "user" => PUSHOVER_USER_KEY,
+    "message" => $msg,
+  ),
+  CURLOPT_SAFE_UPLOAD => true,
+  CURLOPT_RETURNTRANSFER => true,
+));
+curl_exec($ch);
+curl_close($ch);
+}
+
 function update_history($filename, $time_arr){
     $fp = fopen ($filename, "w");
     fwrite($fp, json_encode($time_arr));
@@ -48,5 +63,5 @@ function update_history($filename, $time_arr){
 
 }
 
-?>
 
+?>
