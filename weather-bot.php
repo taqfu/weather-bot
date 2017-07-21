@@ -8,6 +8,10 @@ if (ACCUWEATHER_URL==NULL || MAX_HIGH_TEMP==NULL || MAX_LOW_TEMP==NULL){
     exit("Please fill out your weather-bot-cfg.php first\n");
 }
 $highest_temp_today = false;
+$ch = curl_init(ACCUWEATHER_URL);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$weather_report = curl_exec($ch);
+curl_close($ch);
 //$weather_report = curl-this-shit
 $temp_now =  strstr(substr(strstr($weather_report, "local-temp"), 12, 20), "&", true);
 echo "Temperature now is:" . $temp_now . "\n";
